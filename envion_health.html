@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Envion Health — Patient Advocacy</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Segoe UI',sans-serif;color:#1a2e3b;background:#fff}
+a{text-decoration:none;color:inherit}
+:root{
+  --navy:#1b3a52;--teal:#2a7a8c;--sage:#7ab8b0;
+  --bg-light:#eef6f7;--text-mid:#3a5a6a;--text-muted:#6a8a95;
+}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:100;background:#fff;border-bottom:1px solid #cde3e8;padding:0 1rem;display:flex;align-items:center;justify-content:space-between;height:97px}
+.logo-wrap img{height:180px;width:auto;object-fit:contain;display:block;margin:-20px 0 -45px 0}
+.logo-placeholder{height:44px;display:flex;align-items:center;font-size:1.2rem;font-weight:800;color:var(--navy)}
+.nav-links{display:flex;gap:1.5rem;list-style:none}
+.nav-links a{font-size:.88rem;color:var(--text-mid);transition:color .2s}
+.nav-links a:hover,.nav-links a.active{color:var(--teal)}
+.nav-cta{background:var(--teal);color:#fff;padding:7px 16px;border-radius:8px;font-size:.82rem;font-weight:700;border:none;cursor:pointer;white-space:nowrap}
+.nav-cta:hover{background:var(--navy)}
+
+/* HAMBURGER */
+.hamburger{display:none;flex-direction:column;gap:5px;cursor:pointer;padding:4px}
+.hamburger span{display:block;width:24px;height:2px;background:var(--navy);border-radius:2px;transition:all .3s}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+
+/* MOBILE MENU */
+.mobile-menu{display:none;position:fixed;top:60px;left:0;right:0;background:#fff;border-bottom:1px solid #cde3e8;z-index:99;padding:1rem;flex-direction:column;gap:.5rem;box-shadow:0 4px 12px rgba(0,0,0,.1)}
+.mobile-menu.open{display:flex}
+.mobile-menu a{padding:.75rem 1rem;font-size:1rem;color:var(--text-mid);border-radius:8px;transition:background .2s}
+.mobile-menu a:hover,.mobile-menu a.active{background:var(--bg-light);color:var(--teal)}
+.mobile-menu .mob-cta{background:var(--teal);color:#fff;text-align:center;padding:.85rem;border-radius:8px;font-weight:700;margin-top:.5rem}
+
+/* PAGES */
+.page{display:none;min-height:100vh}
+.page.active{display:block}
+
+/* HERO */
+.hero{background:linear-gradient(140deg,#e4f2f4,#f0f8f8 55%,#e8f4f0);padding:60px 1.25rem 50px;text-align:center}
+.hero h1{font-size:clamp(1.8rem,5vw,2.75rem);font-weight:800;color:var(--navy);line-height:1.2;margin-bottom:1rem}
+.hero h1 span{color:var(--teal)}
+.hero p{font-size:clamp(.95rem,2.5vw,1.1rem);color:var(--text-mid);max-width:540px;margin:0 auto 1.75rem;line-height:1.75}
+.hero-btns{display:flex;gap:.75rem;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--teal);color:#fff;padding:13px 28px;border-radius:10px;font-size:.95rem;font-weight:700;border:none;cursor:pointer;transition:background .2s}
+.btn-primary:hover{background:var(--navy)}
+.btn-secondary{background:#fff;color:var(--teal);padding:13px 28px;border-radius:10px;font-size:.95rem;font-weight:700;border:2px solid var(--teal);cursor:pointer}
+.btn-secondary:hover{background:var(--bg-light)}
+
+/* STATS */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:1px;background:#cde3e8;border-top:1px solid #cde3e8;border-bottom:1px solid #cde3e8}
+.stat{background:#fff;text-align:center;padding:1.25rem .75rem}
+.stat strong{display:block;font-size:1.6rem;font-weight:800;color:var(--teal)}
+.stat span{font-size:.8rem;color:var(--text-muted)}
+
+/* SECTION */
+.section{padding:50px 1.25rem;max-width:1100px;margin:0 auto}
+.section-title{text-align:center;margin-bottom:2rem}
+.section-title h2{font-size:clamp(1.4rem,4vw,1.9rem);font-weight:700;color:var(--navy)}
+.section-title p{color:var(--text-muted);margin-top:.5rem;font-size:.95rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.25rem}
+.card{background:var(--bg-light);border:1px solid #c5e0e5;border-radius:14px;padding:1.25rem}
+.card-icon{font-size:1.75rem;margin-bottom:.6rem}
+.card h3{font-size:.95rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+.card p{font-size:.85rem;color:var(--text-mid);line-height:1.6}
+
+/* INSURANCE BANNER */
+.ins-banner{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;padding:50px 1.25rem;text-align:center}
+.ins-banner p:first-child{font-size:clamp(1.1rem,3.5vw,1.5rem);font-weight:800;margin-bottom:.75rem}
+.ins-banner p:last-child{font-size:.95rem;opacity:.92;max-width:620px;margin:0 auto;line-height:1.8}
+
+/* VIDEOS */
+.video-section{padding:50px 1.25rem;background:#f5fbfc;border-top:1px solid #cde3e8;border-bottom:1px solid #cde3e8}
+.video-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;max-width:900px;margin:0 auto}
+.video-card{background:#fff;border:1px solid #c5e0e5;border-radius:16px;overflow:hidden;box-shadow:0 2px 12px rgba(0,0,0,.06)}
+.video-card iframe{display:block;width:100%}
+.video-card-info{padding:.85rem 1rem;border-top:1px solid #e8f0f3}
+.video-card-info h4{font-weight:700;color:var(--navy);margin-bottom:.25rem;font-size:.92rem}
+.video-card-info p{font-size:.82rem;color:var(--text-muted)}
+
+/* ELIG BANNER */
+.elig-banner{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;padding:50px 1.25rem;text-align:center}
+.elig-banner h2{font-size:clamp(1.2rem,4vw,1.8rem);font-weight:700;margin-bottom:.75rem}
+.elig-banner p{font-size:.95rem;opacity:.9;max-width:500px;margin:0 auto 1.5rem}
+.btn-white{background:#fff;color:var(--teal);padding:13px 32px;border-radius:10px;font-size:.95rem;font-weight:700;border:none;cursor:pointer}
+
+/* ELIGIBILITY FORM */
+.elig-page{max-width:640px;margin:0 auto;padding:50px 1.25rem}
+.elig-page h2{font-size:1.75rem;font-weight:700;color:var(--navy);margin-bottom:.4rem}
+.elig-page .sub{color:var(--text-muted);margin-bottom:1.75rem;font-size:.93rem}
+.form-group{margin-bottom:1.1rem}
+.form-group label{display:block;font-size:.85rem;font-weight:600;color:var(--navy);margin-bottom:.35rem}
+.form-group input,.form-group select{width:100%;padding:11px 13px;border:1px solid #b8d8e0;border-radius:8px;font-size:.93rem;color:#1b3a52;background:#fff;outline:none;-webkit-appearance:none;appearance:none}
+.form-group input:focus,.form-group select:focus{border-color:var(--teal)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:480px){.form-row{grid-template-columns:1fr}}
+.submit-btn{width:100%;background:var(--teal);color:#fff;padding:13px;border-radius:10px;font-size:1rem;font-weight:700;border:none;cursor:pointer;margin-top:.5rem}
+.submit-btn:hover{background:var(--navy)}
+.result-box{display:none;background:#e2f4f2;border:1px solid var(--sage);border-radius:10px;padding:1.25rem;margin-top:1.5rem;color:var(--navy)}
+.result-box strong{display:block;font-size:.95rem;margin-bottom:.4rem;color:var(--teal)}
+
+/* ABOUT */
+.about-hero{background:var(--bg-light);padding:50px 1.25rem;text-align:center;border-bottom:1px solid #cde3e8}
+.about-hero h2{font-size:clamp(1.4rem,4vw,2rem);font-weight:700;color:var(--navy)}
+.about-hero p{max-width:600px;margin:.75rem auto 0;color:var(--text-mid);line-height:1.75;font-size:.95rem}
+
+/* CONTACT */
+.contact-wrap{display:grid;grid-template-columns:1fr 1fr;gap:2.5rem;max-width:960px;margin:0 auto;padding:50px 1.25rem}
+@media(max-width:680px){.contact-wrap{grid-template-columns:1fr;gap:1.5rem}}
+.contact-info h2{font-size:1.6rem;font-weight:700;color:var(--navy);margin-bottom:.7rem}
+.contact-info>p{color:var(--text-mid);line-height:1.75;margin-bottom:1.25rem;font-size:.93rem}
+.info-item{display:flex;align-items:flex-start;gap:.7rem;margin-bottom:.9rem}
+.info-icon{font-size:1rem;margin-top:2px}
+.info-item p{margin:0;color:#1b3a52;font-size:.9rem}
+.info-item span{font-size:.8rem;color:var(--text-muted)}
+.help-box{margin-top:1.25rem;background:var(--bg-light);border:1px solid #c5e0e5;border-radius:12px;padding:1.1rem}
+.help-box .title{font-weight:700;color:var(--navy);margin-bottom:.65rem;font-size:.95rem}
+.help-box ul{list-style:none;display:flex;flex-direction:column;gap:.55rem}
+.help-box li{display:flex;gap:.55rem;font-size:.87rem;color:var(--text-mid)}
+.help-box .tagline{margin-top:.85rem;font-size:.88rem;color:var(--navy);line-height:1.7;font-weight:500}
+.contact-form{background:var(--bg-light);border:1px solid #c5e0e5;border-radius:16px;padding:1.5rem}
+.contact-form h3{font-size:1.1rem;font-weight:700;color:var(--navy);margin-bottom:1.1rem}
+.contact-form textarea{width:100%;padding:11px 13px;border:1px solid #b8d8e0;border-radius:8px;font-size:.93rem;color:#1b3a52;background:#fff;outline:none;resize:vertical;font-family:inherit}
+.contact-form textarea:focus{border-color:var(--teal)}
+
+/* FOOTER */
+footer{background:var(--navy);color:#8ab0be;padding:1.75rem 1.25rem;text-align:center;font-size:.85rem}
+footer strong{color:#fff}
+
+/* CHAT */
+#chat-btn{position:fixed;bottom:20px;right:20px;z-index:200;background:var(--teal);color:#fff;border:none;width:54px;height:54px;border-radius:50%;cursor:pointer;font-size:1.4rem;box-shadow:0 4px 18px rgba(42,122,140,.45);transition:transform .2s}
+#chat-btn:hover{transform:scale(1.08)}
+#chat-window{position:fixed;bottom:84px;right:12px;z-index:200;width:calc(100vw - 24px);max-width:360px;max-height:70vh;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,.16);display:none;flex-direction:column;overflow:hidden;border:1px solid #cde3e8}
+#chat-window.open{display:flex}
+.chat-header{background:linear-gradient(135deg,var(--navy),var(--teal));color:#fff;padding:12px 14px;display:flex;justify-content:space-between;align-items:center}
+.chat-header strong{font-size:.93rem}
+.chat-header span{font-size:.75rem;opacity:.85}
+#close-chat{background:none;border:none;color:#fff;font-size:1.2rem;cursor:pointer}
+#chat-messages{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:9px}
+.msg{max-width:84%;padding:8px 12px;border-radius:12px;font-size:.86rem;line-height:1.55}
+.msg.bot{background:var(--bg-light);color:#1b3a52;align-self:flex-start;border-bottom-left-radius:4px}
+.msg.user{background:var(--teal);color:#fff;align-self:flex-end;border-bottom-right-radius:4px}
+.msg.thinking{background:var(--bg-light);color:var(--text-muted);font-style:italic;align-self:flex-start}
+.chat-input-row{display:flex;gap:7px;padding:9px;border-top:1px solid #ddeaed}
+#chat-input{flex:1;padding:9px 11px;border:1px solid #b8d8e0;border-radius:8px;font-size:.86rem;outline:none}
+#chat-input:focus{border-color:var(--teal)}
+#send-btn{background:var(--teal);color:#fff;border:none;padding:9px 14px;border-radius:8px;cursor:pointer;font-size:.9rem}
+
+/* RESPONSIVE NAV */
+@media(max-width:768px){
+  .nav-links,.nav-cta{display:none}
+  .hamburger{display:flex}
+}
+@media(min-width:769px){
+  .mobile-menu{display:none!important}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="logo-wrap">
+    <img id="logo-img" src="" alt="Envion Health" style="display:none"/>
+    <div class="logo-placeholder" id="logo-placeholder">Envion Health</div>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#" class="active" onclick="showPage('home',this);return false">Home</a></li>
+    <li><a href="#" onclick="showPage('services',this);return false">Services</a></li>
+    <li><a href="#" onclick="showPage('eligibility',this);return false">Check Eligibility</a></li>
+    <li><a href="#" onclick="showPage('about',this);return false">About</a></li>
+    <li><a href="#" onclick="showPage('contact',this);return false">Contact</a></li>
+  </ul>
+  <button class="nav-cta" onclick="showPage('eligibility',null)">Check Eligibility</button>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobile-menu">
+  <a href="#" onclick="showPage('home',this);closeMobileMenu();return false">Home</a>
+  <a href="#" onclick="showPage('services',this);closeMobileMenu();return false">Services</a>
+  <a href="#" onclick="showPage('eligibility',this);closeMobileMenu();return false">Check Eligibility</a>
+  <a href="#" onclick="showPage('about',this);closeMobileMenu();return false">About</a>
+  <a href="#" onclick="showPage('contact',this);closeMobileMenu();return false">Contact</a>
+  <a href="#" class="mob-cta" onclick="showPage('eligibility',null);closeMobileMenu();return false">Check My Eligibility →</a>
+</div>
+
+<!-- HOME -->
+<div id="page-home" class="page active">
+  <div class="hero">
+    <h1>Your <span>Health Advocate</span><br/>Every Step of the Way</h1>
+    <p>Envion Health fights for your rights as a patient — navigating insurance, reducing medical bills, and making sure you get the care you deserve.</p>
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="showPage('eligibility',null)">Check My Eligibility</button>
+      <button class="btn-secondary" onclick="showPage('services',null)">Our Services</button>
+    </div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><strong>2,400+</strong><span>Patients Helped</span></div>
+    <div class="stat"><strong>$18M+</strong><span>Claims Recovered</span></div>
+    <div class="stat"><strong>97%</strong><span>Satisfaction Rate</span></div>
+    <div class="stat"><strong>50+</strong><span>Insurance Plans</span></div>
+  </div>
+
+  <div class="section">
+    <div class="section-title">
+      <h2>How We Advocate for You</h2>
+      <p>From insurance confusion to denied claims, we handle it all so you can focus on your health.</p>
+    </div>
+    <div class="cards">
+      <div class="card"><div class="card-icon">🛡️</div><h3>Insurance Navigation</h3><p>We decode your policy, verify benefits, and ensure you understand exactly what's covered.</p></div>
+      <div class="card"><div class="card-icon">📋</div><h3>Claims Assistance</h3><p>We file, track, and appeal denied claims to maximize your reimbursements.</p></div>
+      <div class="card"><div class="card-icon">💊</div><h3>Care Coordination</h3><p>We connect you with the right specialists and ensure continuity of your care.</p></div>
+      <div class="card"><div class="card-icon">💰</div><h3>Medical Bill Review</h3><p>We audit medical bills for errors and negotiate costs on your behalf.</p></div>
+    </div>
+  </div>
+
+  <!-- INSURANCE FREE BANNER -->
+  <div class="ins-banner">
+    <p><span style="color:#ff4444">❤️</span> Your Envion Advocate is Covered by Your Insurance</p>
+    <p>Envion Health advocates are covered by your insurance plan — so expert support costs you nothing. You may only be responsible for a copay if your plan requires one, and if you have secondary insurance, it may cover that too. <strong>You get your Envion advocate for free.</strong></p>
+  </div>
+
+  <!-- VIDEOS -->
+  <div class="video-section">
+    <div style="text-align:center;margin-bottom:2rem">
+      <h2 style="font-size:clamp(1.4rem,4vw,1.9rem);font-weight:700;color:var(--navy)">Learn About Patient Advocacy</h2>
+      <p style="color:var(--text-muted);margin-top:.5rem;font-size:.93rem">Watch our videos to understand how Envion Health can help you.</p>
+    </div>
+    <div class="video-grid">
+      <div class="video-card">
+        <div style="position:relative;padding-bottom:177.77%;height:0;overflow:hidden">
+          <iframe src="https://drive.google.com/file/d/1Ge0XwfVntka_HfPbkrXy5w4em92_XQqA/preview"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
+            allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <div class="video-card-info">
+          <h4>What is Patient Advocacy?</h4>
+          <p>Understand what a patient advocate does and why it matters for your health.</p>
+        </div>
+      </div>
+      <div class="video-card">
+        <div style="position:relative;padding-bottom:177.77%;height:0;overflow:hidden">
+          <iframe src="https://drive.google.com/file/d/1omC06KKn4fGqju5K5cnMzlP0PzZvxmei/preview"
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border:0"
+            allow="autoplay" allowfullscreen></iframe>
+        </div>
+        <div class="video-card-info">
+          <h4>How Envion Health Works</h4>
+          <p>See how we work step by step — from your first call to getting the care you need.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="elig-banner">
+    <h2>Find Out What You Qualify For</h2>
+    <p>Takes less than 2 minutes. Check your eligibility for financial assistance, programs, and advocacy services — at no cost to you.</p>
+    <button class="btn-white" onclick="showPage('eligibility',null)">Check My Eligibility Now</button>
+  </div>
+
+  <footer>
+    <strong>Envion Health</strong> &mdash; Advocacy Services for Patients<br/>
+    <span style="font-size:.78rem;margin-top:.4rem;display:block">© 2026 Envion Health. All rights reserved. | Not a medical provider.</span>
+  </footer>
+</div>
+
+<!-- SERVICES -->
+<div id="page-services" class="page">
+  <div class="about-hero">
+    <h2>Our Services</h2>
+    <p>Comprehensive patient advocacy designed to reduce stress, fight denials, and ensure you receive the care you're entitled to.</p>
+  </div>
+  <div class="section">
+    <div class="cards">
+      <div class="card"><div class="card-icon">🛡️</div><h3>Insurance Navigation</h3><p>We review your policy, verify benefits, and explain coverage in plain language.</p></div>
+      <div class="card"><div class="card-icon">📋</div><h3>Claims Filing & Appeals</h3><p>We handle the entire claims process — submitting, following up, and appealing denials.</p></div>
+      <div class="card"><div class="card-icon">💊</div><h3>Care Coordination</h3><p>We coordinate referrals and communication between your care team.</p></div>
+      <div class="card"><div class="card-icon">💰</div><h3>Medical Bill Negotiation</h3><p>We audit bills for errors and negotiate to reduce your out-of-pocket costs.</p></div>
+      <div class="card"><div class="card-icon">🏥</div><h3>Prior Authorization Support</h3><p>We manage prior authorization so your treatments are approved without delays.</p></div>
+      <div class="card"><div class="card-icon">📞</div><h3>Provider Communication</h3><p>We serve as your voice with hospitals, specialists, and insurance representatives.</p></div>
+    </div>
+    <div style="text-align:center;margin-top:2rem">
+      <button class="btn-primary" onclick="showPage('eligibility',null)">Check My Eligibility</button>
+    </div>
+  </div>
+  <footer><strong>Envion Health</strong> — © 2026 All rights reserved.</footer>
+</div>
+
+<!-- ELIGIBILITY -->
+<div id="page-eligibility" class="page">
+  <div class="elig-page">
+    <h2>Check Your Eligibility</h2>
+    <p class="sub">Fill out the form below and we'll let you know what you may qualify for — completely free.</p>
+    <div class="form-row">
+      <div class="form-group"><label>First Name</label><input type="text" id="fname" placeholder="Jane"/></div>
+      <div class="form-group"><label>Last Name</label><input type="text" id="lname" placeholder="Doe"/></div>
+    </div>
+    <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="jane@email.com"/></div>
+    <div class="form-group"><label>Phone Number</label><input type="tel" id="phone" placeholder="(555) 000-0000"/></div>
+    <div class="form-row">
+      <div class="form-group"><label>Date of Birth</label><input type="date" id="dob"/></div>
+      <div class="form-group"><label>State</label>
+        <select id="state"><option value="">Select state...</option><option>Texas</option><option>California</option><option>Florida</option><option>New York</option><option>Illinois</option><option>Other</option></select>
+      </div>
+    </div>
+    <div class="form-group"><label>Insurance Type</label>
+      <select id="insurance"><option value="">Select...</option><option>Medicare</option><option>Medicaid</option><option>Private / Employer Insurance</option><option>Marketplace Plan</option><option>Uninsured</option><option>Other</option></select>
+    </div>
+    <div class="form-group"><label>What do you need help with?</label>
+      <select id="need"><option value="">Select...</option><option>Denied Claim</option><option>High Medical Bills</option><option>Insurance Navigation</option><option>Prior Authorization</option><option>Finding a Specialist</option><option>General Advocacy</option></select>
+    </div>
+    <button class="submit-btn" onclick="checkEligibility()">Check My Eligibility →</button>
+    <div class="result-box" id="result-box">
+      <strong>✅ Great news!</strong>
+      <p id="result-msg"></p>
+    </div>
+  </div>
+  <footer><strong>Envion Health</strong> — © 2026 All rights reserved.</footer>
+</div>
+
+<!-- ABOUT -->
+<div id="page-about" class="page">
+  <div class="about-hero">
+    <h2>About Envion Health</h2>
+    <p>Founded by patient advocates who experienced the healthcare system firsthand, Envion Health was built on a simple belief: every patient deserves a champion in their corner.</p>
+  </div>
+  <div class="section">
+    <div class="section-title"><h2>Our Mission</h2></div>
+    <p style="text-align:center;max-width:680px;margin:0 auto;color:var(--text-mid);font-size:1rem;line-height:1.85">We exist to eliminate the confusion, fear, and financial burden that comes with navigating the healthcare system. Our certified advocates work tirelessly to ensure every patient receives the care and reimbursement they deserve — regardless of background or financial situation.</p>
+  </div>
+  <footer><strong>Envion Health</strong> — © 2026 All rights reserved.</footer>
+</div>
+
+<!-- CONTACT -->
+<div id="page-contact" class="page">
+  <div class="contact-wrap">
+    <div class="contact-info">
+      <h2>Get in Touch</h2>
+      <p>Our team is ready to help. Reach out by phone, email, or fill out the form and we'll respond within one business day.</p>
+      <div class="info-item"><span class="info-icon">📞</span><div><p>(972) 430-9742</p><span>Mon–Fri, 8am–6pm CT</span></div></div>
+      <div class="info-item"><span class="info-icon">📠</span><div><p>(972) 947-5183</p><span>Fax</span></div></div>
+      <div class="info-item"><span class="info-icon">✉️</span><div><p>envionhealth@gmail.com</p><span>We respond within 24 hours</span></div></div>
+      <div class="info-item"><span class="info-icon">📍</span><div><p>Serving Patients Nationwide</p><span>Available wherever you are</span></div></div>
+      <div class="help-box">
+        <p class="title">We're here when the system lets you down.</p>
+        <ul>
+          <li><span>🩺</span> Can't get an appointment with your doctor?</li>
+          <li><span>💊</span> Can't understand your medications or treatment plan?</li>
+          <li><span>📋</span> Dealing with denied claims or confusing bills?</li>
+        </ul>
+        <p class="tagline">You get access to your own personal health advocate who fights for you — so you get the care and answers you need.</p>
+      </div>
+    </div>
+    <div class="contact-form">
+      <h3>Send Us a Message</h3>
+      <div class="form-group"><label>Your Name</label><input type="text" placeholder="Full name"/></div>
+      <div class="form-group"><label>Email</label><input type="email" placeholder="you@email.com"/></div>
+      <div class="form-group"><label>Subject</label>
+        <select><option>General Inquiry</option><option>Eligibility Question</option><option>Claim Help</option><option>Billing Issue</option><option>Other</option></select>
+      </div>
+      <div class="form-group"><label>Message</label><textarea rows="4" placeholder="How can we help you?"></textarea></div>
+      <button class="submit-btn" onclick="alert('Thank you! We\'ll be in touch within one business day.')">Send Message</button>
+    </div>
+  </div>
+  <footer><strong>Envion Health</strong> — © 2026 All rights reserved.</footer>
+</div>
+
+<!-- CHAT -->
+<button id="chat-btn" onclick="toggleChat()">💬</button>
+<div id="chat-window">
+  <div class="chat-header">
+    <div><strong>Envion Health Assistant</strong><br/><span>AI-powered · Replies instantly</span></div>
+    <button id="close-chat" onclick="toggleChat()">✕</button>
+  </div>
+  <div id="chat-messages">
+    <div class="msg bot">Hi! I'm the Envion Health virtual assistant. How can I help you today?</div>
+  </div>
+  <div class="chat-input-row">
+    <input id="chat-input" type="text" placeholder="Type your message..." onkeydown="if(event.key==='Enter')sendMsg()"/>
+    <button id="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<script>
+// LOGO UPLOAD
+function initLogo(){
+  const img = document.getElementById('logo-img');
+  const ph = document.getElementById('logo-placeholder');
+  img.src = 'https://drive.google.com/thumbnail?id=1sQ9ozdkPUsvsNngbm-CMBJf_Q9RqMxWq&sz=w200';
+  img.style.display = 'block';
+  if(ph) ph.style.display = 'none';
+}
+initLogo();
+
+// NAV
+function showPage(id, el){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+id).classList.add('active');
+  document.querySelectorAll('.nav-links a, .mobile-menu a').forEach(a=>a.classList.remove('active'));
+  if(el) el.classList.add('active');
+  window.scrollTo(0,0);
+}
+function toggleMenu(){
+  document.getElementById('hamburger').classList.toggle('open');
+  document.getElementById('mobile-menu').classList.toggle('open');
+}
+function closeMobileMenu(){
+  document.getElementById('hamburger').classList.remove('open');
+  document.getElementById('mobile-menu').classList.remove('open');
+}
+
+// ELIGIBILITY
+function checkEligibility(){
+  const fn=document.getElementById('fname').value.trim();
+  const ins=document.getElementById('insurance').value;
+  const need=document.getElementById('need').value;
+  if(!fn||!ins||!need){alert('Please fill in your name, insurance type, and area of need.');return;}
+  const box=document.getElementById('result-box');
+  document.getElementById('result-msg').textContent=`Thank you, ${fn}! Based on your ${ins} coverage and need for help with "${need}", you likely qualify for our advocacy services at no cost. A specialist will contact you within 1 business day.`;
+  box.style.display='block';
+  box.scrollIntoView({behavior:'smooth'});
+}
+
+// CHAT
+function toggleChat(){
+  const w=document.getElementById('chat-window');
+  w.classList.toggle('open');
+  if(w.classList.contains('open')) document.getElementById('chat-input').focus();
+}
+const chatHistory=[];
+async function sendMsg(){
+  const input=document.getElementById('chat-input');
+  const text=input.value.trim(); if(!text) return;
+  input.value='';
+  appendMsg(text,'user');
+  chatHistory.push({role:'user',content:text});
+  const thinking=appendMsg('Typing...','thinking');
+  try{
+    // Replace YOUR_VERCEL_URL below with your actual Vercel deployment URL
+    const res=await fetch('https://envion-health-api-production.up.railway.app/api/chat',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages:chatHistory})
+    });
+    const data=await res.json();
+    const reply=data.reply||'Sorry, I had trouble responding.';
+    thinking.remove(); appendMsg(reply,'bot');
+    chatHistory.push({role:'assistant',content:reply});
+  }catch(e){
+    thinking.remove(); appendMsg('Sorry, trouble connecting. Please try again.','bot');
+  }
+}
+function appendMsg(text,type){
+  const div=document.createElement('div');
+  div.className='msg '+type; div.textContent=text;
+  const msgs=document.getElementById('chat-messages');
+  msgs.appendChild(div); msgs.scrollTop=msgs.scrollHeight;
+  return div;
+}
+</script>
+</body>
+</html>
